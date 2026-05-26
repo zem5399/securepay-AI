@@ -3,6 +3,7 @@ package org.example.securepayai.service;
 import lombok.RequiredArgsConstructor;
 import org.example.securepayai.dto.CreateTransferRequest;
 import org.example.securepayai.dto.CreatedTransferResponse;
+import org.example.securepayai.dto.UpdateTransferRequest;
 import org.example.securepayai.entity.Transfer;
 import org.example.securepayai.dto.TransferResponse;
 import org.example.securepayai.entity.TransferStatus;
@@ -56,6 +57,32 @@ public class TransferService {
         return mapToTransferResponse(transfer);
     }
 
+    public TransferResponse deleteById(Long id) {
+        Transfer transfer = transferRepository.findById(id)
+                .orElseThrow(() -> new TransferNotFoundException(id));
+
+        transferRepository.delete(transfer);
+
+        return mapToTransferResponse(transfer);
+    }
+
+    public TransferResponse updateTransfer(Long id, UpdateTransferRequest request) {
+
+        Transfer transfer = transferRepository.findById(id)
+                .orElseThrow(() -> new TransferNotFoundException(id));
+
+        transfer.setSenderName(request.getSenderName());
+        transfer.setReceiverName(request.getReceiverName());
+        transfer.setReceiverCountry(request.getReceiverCountry());
+        transfer.setAmount(request.getAmount());
+        transfer.setCurrency(request.getCurrency());
+        transfer.setPurpose(request.getPurpose());
+
+        Transfer updateTransfer = transferRepository.save(transfer);
+
+        return mapToTransferResponse(updateTransfer);
+    }
+
     private TransferResponse mapToTransferResponse(Transfer transfer) {
         return TransferResponse.builder()
                 .id(transfer.getId())
@@ -69,14 +96,4 @@ public class TransferService {
                 .createdAt(transfer.getCreatedAt())
                 .build();
     }
-
-    public TransferResponse deleteById(Long id) {
-        Transfer transfer = transferRepository.findById(id)
-                .orElseThrow(() -> new TransferNotFoundException(id));
-
-        transferRepository.delete(transfer);
-
-        return mapToTransferResponse(transfer);
-    }
-
 }

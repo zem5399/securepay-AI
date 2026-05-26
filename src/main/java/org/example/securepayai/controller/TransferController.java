@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.securepayai.dto.CreateTransferRequest;
 import org.example.securepayai.dto.CreatedTransferResponse;
 import org.example.securepayai.dto.TransferResponse;
+import org.example.securepayai.dto.UpdateTransferRequest;
 import org.example.securepayai.service.TransferService;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,5 +36,10 @@ public class TransferController {
     @DeleteMapping("/{id}")
     public TransferResponse deleteTransferById(@PathVariable Long id) {
         return service.deleteById(id);
+    }
+
+    @PutMapping("/{id}")
+    public TransferResponse updateTransfer(@PathVariable Long id, @Valid @RequestBody UpdateTransferRequest request) {
+        return service.updateTransfer(id, request);
     }
 }
