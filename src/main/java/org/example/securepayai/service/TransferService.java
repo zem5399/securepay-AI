@@ -4,11 +4,14 @@ import lombok.RequiredArgsConstructor;
 import org.example.securepayai.dto.CreateTransferRequest;
 import org.example.securepayai.dto.CreatedTransferResponse;
 import org.example.securepayai.entity.Transfer;
+import org.example.securepayai.dto.TransferResponse;
 import org.example.securepayai.entity.TransferStatus;
+import org.example.securepayai.exception.TransferNotFoundException;
 import org.example.securepayai.repository.TransferRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 //the RequiredArgsConstructor is for constructor injection. better than @Autowired
@@ -38,4 +41,42 @@ public class TransferService {
                 .message("Transfer request created successfully")
                 .build();
     }
+
+    public List<TransferResponse> getAllTransfer() {
+        return transferRepository.findAll()
+                .stream()
+                .map(transfer -> this.mapToTransferResponse(transfer))
+                .toList();
+    }
+
+    public TransferResponse getTransferById(Long id) {
+        Transfer transfer = transferRepository.findById(id)
+                .orElseThrow(() -> new TransferNotFoundException(id));
+
+        return mapToTransferResponse(transfer);
+    }
+
+    private TransferResponse mapToTransferResponse(Transfer transfer) {
+        return TransferResponse.builder()
+                .id(transfer.getId())
+                .senderName(transfer.getSenderName())
+                .receiverName(transfer.getReceiverName())
+                .receiverCountry(transfer.getReceiverCountry())
+                .amount(transfer.getAmount())
+                .currency(transfer.getCurrency())
+                .purpose(transfer.getPurpose())
+                .status(transfer.getStatus())
+                .createdAt(transfer.getCreatedAt())
+                .build();
+    }
+
+    public TransferResponse deleteById(Long id) {
+        Transfer transfer = transferRepository.findById(id)
+                .orElseThrow(() -> new TransferNotFoundException(id));
+
+        transferRepository.delete(transfer);
+
+        return mapToTransferResponse(transfer);
+    }
+
 }

@@ -4,11 +4,11 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.securepayai.dto.CreateTransferRequest;
 import org.example.securepayai.dto.CreatedTransferResponse;
+import org.example.securepayai.dto.TransferResponse;
 import org.example.securepayai.service.TransferService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/transfers")
@@ -20,5 +20,20 @@ public class TransferController {
     @PostMapping
     public CreatedTransferResponse createTransfer(@Valid @RequestBody CreateTransferRequest request) {
         return service.creatTransfer(request);
+    }
+
+    @GetMapping
+    public List<TransferResponse> getAllTransfers() {
+        return service.getAllTransfer();
+    }
+
+    @GetMapping("/{id}")
+    public TransferResponse getTransferById(@PathVariable Long id) {
+        return service.getTransferById(id);
+    }
+
+    @DeleteMapping("/{id}")
+    public TransferResponse deleteTransferById(@PathVariable Long id) {
+        return service.deleteById(id);
     }
 }
