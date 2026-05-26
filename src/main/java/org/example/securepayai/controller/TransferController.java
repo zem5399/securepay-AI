@@ -2,10 +2,7 @@ package org.example.securepayai.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.example.securepayai.dto.CreateTransferRequest;
-import org.example.securepayai.dto.CreatedTransferResponse;
-import org.example.securepayai.dto.TransferResponse;
-import org.example.securepayai.dto.UpdateTransferRequest;
+import org.example.securepayai.dto.*;
 import org.example.securepayai.service.TransferService;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,5 +38,10 @@ public class TransferController {
     @PutMapping("/{id}")
     public TransferResponse updateTransfer(@PathVariable Long id, @Valid @RequestBody UpdateTransferRequest request) {
         return service.updateTransfer(id, request);
+    }
+
+    @PatchMapping("/{id}/status")
+    public TransferResponse updateTransferStatus(@PathVariable Long id, @RequestBody UpdateTransferStatusRequest request) {
+        return service.updateTransferStatus(id, request);
     }
 }

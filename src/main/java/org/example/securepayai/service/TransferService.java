@@ -1,11 +1,8 @@
 package org.example.securepayai.service;
 
 import lombok.RequiredArgsConstructor;
-import org.example.securepayai.dto.CreateTransferRequest;
-import org.example.securepayai.dto.CreatedTransferResponse;
-import org.example.securepayai.dto.UpdateTransferRequest;
+import org.example.securepayai.dto.*;
 import org.example.securepayai.entity.Transfer;
-import org.example.securepayai.dto.TransferResponse;
 import org.example.securepayai.entity.TransferStatus;
 import org.example.securepayai.exception.TransferNotFoundException;
 import org.example.securepayai.repository.TransferRepository;
@@ -78,6 +75,16 @@ public class TransferService {
         transfer.setCurrency(request.getCurrency());
         transfer.setPurpose(request.getPurpose());
 
+        Transfer updateTransfer = transferRepository.save(transfer);
+
+        return mapToTransferResponse(updateTransfer);
+    }
+
+    public TransferResponse updateTransferStatus(Long id, UpdateTransferStatusRequest request) {
+        Transfer transfer = transferRepository.findById(id)
+                .orElseThrow(() -> new TransferNotFoundException(id));
+
+        transfer.setStatus(request.getStatus());
         Transfer updateTransfer = transferRepository.save(transfer);
 
         return mapToTransferResponse(updateTransfer);
