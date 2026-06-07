@@ -17,6 +17,7 @@ import java.util.List;
 public class TransferService {
 
     private final TransferRepository transferRepository;
+    private final TransferProcessorService transferProcessorService;
 
     public CreatedTransferResponse creatTransfer(CreateTransferRequest request) {
 
@@ -32,6 +33,7 @@ public class TransferService {
                 .build();
 
         Transfer saveTransfer = transferRepository.save(transfer);
+        transferProcessorService.processTransferAsync(saveTransfer.getId());
 
         return CreatedTransferResponse.builder()
                 .transferId(saveTransfer.getId())
